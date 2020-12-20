@@ -1,4 +1,8 @@
 # Steps
+0. To create a cluster
+```
+minikube start --vm-driver=hyperkit
+```
 1. kubectl apply -f mongo-secret.yaml
 2. kubectl get secret
 ```
@@ -13,7 +17,7 @@ mongodb-secret        Opaque                                2      8s
 
 5. kubectl get pod 
 
-   kubetcl get pod --watch 
+   kubectl get pod --watch 
 
    kubectl describe pod <pod-name>
 
@@ -29,7 +33,7 @@ Allow you to put multiple documents in 1 file
 --- denote separation of documents
 Put Deployment & Service in 1 file because they belong together
 
-kubectl apply -f -f mongodb-deployment.yaml
+kubectl apply -f mongodb-deployment.yaml
 
 kubectl get service
 ```
@@ -54,3 +58,27 @@ Endpoints:         172.17.0.4:27017
 Session Affinity:  None
 Events:            <none>
 ```
+
+IP address of the Pod = 172.17.0.4 and port is 27017 where the app is listening to
+
+kubectl get pod -o wide 
+
+kubectl get all  -> to show ALL components
+
+kubectl get all | grep mongodb -> to filter by monddb
+
+
+Need to tell mongoexpress which database to connect?
+MongoDB Address/Internal Service
+
+which credentials to authenticate?
+
+kubectl apply -f mongo-configmap.yaml
+
+kubectl apply -f mongoexpress-deployment.yaml
+
+kubectl get pod
+
+kubectl logs <service-name>
+
+kubectl get service
