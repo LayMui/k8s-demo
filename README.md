@@ -79,6 +79,74 @@ kubectl apply -f mongoexpress-deployment.yaml
 
 kubectl get pod
 
-kubectl logs <service-name>
+kubectl logs mongo-express-78fcf796b8-9glzp
+```
+Waiting for mongodb-service:27017...
+Welcome to mongo-express
+------------------------
+
+
+Mongo Express server listening at http://0.0.0.0:8081
+Server is open to allow connections from anyone (0.0.0.0)
+basicAuth credentials are "admin:pass", it is recommended you change this in your config.js!
+Database connected
+Admin Database connected
+```
+
+To access mongo express from a browser, we need a external service
+Add the service to the mongoexpress-deployment.yaml
+How to make it an External Service?
+ - type: "LoadBalancer"
+ ..assigns service an external IP address and so accepts external requests
+ 
+ - nodePort: Port where the external IP address will be opened 
+   It is the Port you put in the browser to access this service
+   must be between 30000 - 32767
 
 kubectl get service
+```
+NAME                    TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+kubernetes              ClusterIP      10.96.0.1      <none>        443/TCP          7h32m
+mongo-express-service   LoadBalancer   10.96.62.211   <pending>     8081:30000/TCP   7m9s
+mongodb-service         ClusterIP      10.97.167.20   <none>        27017/TCP        3h18m
+```
+
+Internal Service or Cluster IP is DEFAULT
+Cluster IP will give the service an internal IP address which is 10.97.xx
+LoadBalancer will also give the service an internal IP address and in additional an external IP
+
+minikube service mongo-express-service to access the external IP address
+
+# To setup namespace
+brew install kubectx
+
+```
+kubens
+```
+
+# How to install ingress controller in minikube
+```
+minikube addons enable ingress
+```
+automatically starts the K8s Nginx implementation of Ingress Controller
+
+
+kubectl get pod -n kube-system
+You will see the Nginx ingress controller running in your cluster
+```
+NAME                                        READY   STATUS      RESTARTS   AGE
+coredns-f9fd979d6-ptjz5                     1/1     Running     1          24h
+etcd-minikube                               1/1     Running     1          25h
+ingress-nginx-admission-create-dxd8m        0/1     Completed   0          6m22s
+ingress-nginx-admission-patch-frrkl         0/1     Completed   0          6m22s
+ingress-nginx-controller-558664778f-8gwlp   1/1     Running     0          6m22s
+kube-apiserver-minikube                     1/1     Running     1          25h
+kube-controller-manager-minikube            1/1     Running     1          25h
+kube-proxy-pf5dj                            1/1     Running     1          24h
+kube-scheduler-minikube                     1/1     Running     1          25h
+storage-provisioner                         1/1     Running     8          25h
+```
+
+
+
+
